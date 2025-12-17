@@ -1,0 +1,22 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/repos/mixeduser/complex-repo/branches"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": [
+      {
+        "name": "main",
+        "commit": { "sha": "abc123" }
+      },
+      {
+        "name": "develop",
+        "commit": { "sha": "def456" }
+      }
+    ]
+  }
+}

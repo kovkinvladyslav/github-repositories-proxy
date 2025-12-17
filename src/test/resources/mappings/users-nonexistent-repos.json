@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/users/nonexistentownerlogin/repos"
+  },
+  "response": {
+    "status": 404,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "status": 404,
+      "message": "User not found: nonexistentownerlogin"
+    }
+  }
+}

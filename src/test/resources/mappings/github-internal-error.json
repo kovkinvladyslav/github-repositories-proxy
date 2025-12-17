@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/users/githuberror/repos"
+  },
+  "response": {
+    "status": 500,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "message": "Internal Server Error"
+    }
+  }
+}

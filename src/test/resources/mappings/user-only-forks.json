@@ -1,0 +1,26 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/users/userwithonlyforks/repos"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": [
+      {
+        "id": 1,
+        "name": "forked-repo-1",
+        "owner": { "login": "userwithonlyforks" },
+        "fork": true
+      },
+      {
+        "id": 2,
+        "name": "forked-repo-2",
+        "owner": { "login": "userwithonlyforks" },
+        "fork": true
+      }
+    ]
+  }
+}

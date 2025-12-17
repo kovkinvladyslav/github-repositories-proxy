@@ -1,0 +1,26 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/users/mixeduser/repos"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": [
+      {
+        "id": 10,
+        "name": "forked-repo",
+        "owner": { "login": "mixeduser" },
+        "fork": true
+      },
+      {
+        "id": 11,
+        "name": "real-repo",
+        "owner": { "login": "mixeduser" },
+        "fork": false
+      }
+    ]
+  }
+}
