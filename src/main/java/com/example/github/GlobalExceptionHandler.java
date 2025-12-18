@@ -4,18 +4,31 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+/**
+ * Global exception handler for REST controllers.
+ */
 @Slf4j
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public final class GlobalExceptionHandler {
 
+    /**
+     * Handles UserNotFoundException and returns 404 response.
+     *
+     * @param e the exception
+     * @return 404 response with error details
+     */
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(UserNotFoundException.class)
-    ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException e) {
+    ErrorResponse
+    handleUserNotFound(final UserNotFoundException e) {
         log.debug("User not found handled: {}", e.getMessage());
 
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(new ErrorResponse(404, e.getMessage()));
+        return new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                e.getMessage()
+        );
     }
 }

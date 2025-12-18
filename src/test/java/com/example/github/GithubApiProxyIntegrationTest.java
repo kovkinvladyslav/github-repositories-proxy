@@ -13,10 +13,11 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.web.client.RestClient;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class GithubApiProxyIntegrationTest {
+final class GithubApiProxyIntegrationTest {
 
     @LocalServerPort
     private int port;
@@ -30,7 +31,7 @@ class GithubApiProxyIntegrationTest {
                     .build();
 
     @DynamicPropertySource
-    static void wiremockProps(DynamicPropertyRegistry registry) {
+    static void wiremockProps(final DynamicPropertyRegistry registry) {
         registry.add("github-api.base-url", wireMock::baseUrl);
     }
 
@@ -50,7 +51,7 @@ class GithubApiProxyIntegrationTest {
         var response = restClient
                 .get()
                 .uri("github/{userName}/repositories", userName)
-                .exchange((request, httpResponse) -> ResponseEntity
+                .exchange((request,httpResponse) -> ResponseEntity
                         .status(httpResponse.getStatusCode())
                         .body(httpResponse.bodyTo(ErrorResponse.class)));
 

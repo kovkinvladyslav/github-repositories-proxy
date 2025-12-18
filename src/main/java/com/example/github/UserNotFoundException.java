@@ -1,7 +1,10 @@
 package com.example.github;
 
-public class UserNotFoundException extends RuntimeException{
-    UserNotFoundException(String username) {
+/**
+ * Exception thrown when a GitHub user is not found.
+ */
+public final class UserNotFoundException extends RuntimeException {
+    UserNotFoundException(final String username) {
         super("User not found: " + username);
     }
 }

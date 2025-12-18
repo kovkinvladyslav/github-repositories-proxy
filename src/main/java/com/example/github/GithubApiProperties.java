@@ -7,4 +7,4 @@ public record GithubApiProperties(
         String baseUrl,
         String userAgent,
         String apiVersion
-) {}
+) { }
