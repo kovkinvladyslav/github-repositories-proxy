@@ -51,7 +51,7 @@ final class GithubApiProxyIntegrationTest {
         var response = restClient
                 .get()
                 .uri("github/{userName}/repositories", userName)
-                .exchange((request,httpResponse) -> ResponseEntity
+                .exchange((_,httpResponse) -> ResponseEntity
                         .status(httpResponse.getStatusCode())
                         .body(httpResponse.bodyTo(ErrorResponse.class)));
 
@@ -93,7 +93,7 @@ final class GithubApiProxyIntegrationTest {
         var response = restClient
                 .get()
                 .uri("/github/{userName}/repositories", userName)
-                .exchange((request, httpResponse) -> ResponseEntity
+                .exchange((_, httpResponse) -> ResponseEntity
                         .status(httpResponse.getStatusCode())
                         .body(httpResponse.bodyTo(String.class)));
 
