@@ -2,6 +2,7 @@ package com.example.github;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,25 +16,24 @@ public class GithubService {
     }
 
     public List<RepositoryResponse> getRepositories(String username) {
-        return Arrays.stream(client.getRepositories(username))
-                .filter(repo -> !repo.fork())
-                .map(this::mapToResponse)
-                .toList();
-    }
+        var repos = client.getRepositories(username);
 
-    private RepositoryResponse mapToResponse(GithubRepository repo) {
-        var branches = client.getRepositoryBranches(
-                repo.owner().login(),
-                repo.name());
+        List<RepositoryResponse> repositoryResponse = new ArrayList<>();
+        for (var repo : repos) {
+            if (repo.fork()) continue;
 
-        List<BranchResponse> branchResponses = Arrays.stream(branches)
-                .map(b -> new BranchResponse(b.name(), b.commit().sha()))
-                .toList();
+            var branches = client.getRepositoryBranches(
+                    repo.owner().login(),
+                    repo.name()
+            );
 
-        return new RepositoryResponse(
-                repo.name(),
-                repo.owner().login(),
-                branchResponses
-        );
+            repositoryResponse.add(new RepositoryResponse(
+                    repo.name(),
+                    repo.owner().login(),
+                    Arrays.stream(branches).map(branch -> new BranchResponse(
+                            branch.name(),
+                            branch.commit().sha())).toList()));
+        }
+        return repositoryResponse;
     }
 }
