@@ -2,42 +2,83 @@ package com.example.github;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClient;
+import tools.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 @Component
 public class GithubClient {
 
-    private final RestClient restClient;
+    private final HttpClient httpClient;
+    private final ObjectMapper objectMapper;
+    private final String baseUrl;
 
     public GithubClient(
-            RestClient.Builder builder,
-            @Value("${github-api.base-url}") String baseUrl
+            @Value("${github-api.base-url}") String baseUrl,
+            ObjectMapper objectMapper
     ) {
-        this.restClient = builder
-                .baseUrl(baseUrl)
-                .defaultHeader("User-Agent", "github-api-proxy")
-                .defaultHeader("Accept", "application/vnd.github+json")
-                .defaultHeader("X-GitHub-Api-Version", "2022-11-28")
-                .build();
+        this.baseUrl = baseUrl;
+        this.objectMapper = objectMapper;
+        this.httpClient = HttpClient.newHttpClient();
     }
 
     public GithubRepository[] getRepositories(String username) {
-        try {
-            return restClient.get()
-                    .uri("/users/{username}/repos", username)
-                    .retrieve()
-                    .body(GithubRepository[].class);
+        HttpRequest request = baseRequest(
+                "/users/%s/repos".formatted(username)
+        );
 
-        } catch (HttpClientErrorException.NotFound e) {
-            throw new UserNotFoundException(username);
+        try {
+            HttpResponse<String> response =
+                    httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 404) {
+                throw new UserNotFoundException(username);
+            }
+
+            ensureSuccess(response);
+            return objectMapper.readValue(response.body(), GithubRepository[].class);
+
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException("Failed to fetch repositories", e);
         }
     }
 
     public GithubBranch[] getRepositoryBranches(String owner, String repo) {
-        return restClient.get()
-                .uri("/repos/{owner}/{repo}/branches", owner, repo)
-                .retrieve()
-                .body(GithubBranch[].class);
+        HttpRequest request = baseRequest(
+                "/repos/%s/%s/branches".formatted(owner, repo)
+        );
+
+        try {
+            HttpResponse<String> response =
+                    httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            ensureSuccess(response);
+            return objectMapper.readValue(response.body(), GithubBranch[].class);
+
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException("Failed to fetch branches", e);
+        }
+    }
+
+    private HttpRequest baseRequest(String path) {
+        return HttpRequest.newBuilder()
+                .uri(URI.create(baseUrl + path))
+                .header("User-Agent", "github-api-proxy")
+                .header("Accept", "application/vnd.github+json")
+                .header("X-GitHub-Api-Version", "2022-11-28")
+                .GET()
+                .build();
+    }
+
+    private static void ensureSuccess(HttpResponse<?> response) {
+        if (response.statusCode() / 100 != 2) {
+            throw new RuntimeException(
+                    "GitHub API error: HTTP " + response.statusCode()
+            );
+        }
     }
 }
