@@ -44,7 +44,7 @@ class GithubApiProxyIntegrationTest {
     @Test
     void getRepositories_UserNotFound() {
         // given
-        String userName = "nonexistentownerlogin";
+        String userName = "nonExistentOwnerLogin";
 
         // when
         var response = restClient
@@ -66,7 +66,7 @@ class GithubApiProxyIntegrationTest {
     @Test
     void getRepositories_onlyForks_returnsEmptyList() {
         // given
-        String userName = "userwithonlyforks";
+        String userName = "userWithOnlyForks";
 
         // when
         ResponseEntity<RepositoryResponse[]> response =
@@ -86,7 +86,7 @@ class GithubApiProxyIntegrationTest {
     @Test
     void getRepositories_githubInternalError_returns500() {
         // given
-        String userName = "githuberror";
+        String userName = "gitHubError";
 
         // when
         var response = restClient
@@ -103,7 +103,7 @@ class GithubApiProxyIntegrationTest {
     @Test
     void getRepositories_mixedRepos_filtersForks() {
         // given
-        String userName = "mixeduser";
+        String userName = "mixedUser";
 
         // when
         ResponseEntity<RepositoryResponse[]> response =
@@ -121,7 +121,7 @@ class GithubApiProxyIntegrationTest {
 
         RepositoryResponse repo = repos[0];
         assertEquals("real-repo", repo.repositoryName());
-        assertEquals("mixeduser", repo.ownerLogin());
+        assertEquals("mixedUser", repo.ownerLogin());
         assertNotNull(repo.branches());
         assertEquals(0, repo.branches().size());
     }

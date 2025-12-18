@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "url": "/users/userwithonlyforks/repos"
+    "url": "/users/userWithOnlyForks/repos"
   },
   "response": {
     "status": 200,
@@ -12,13 +12,13 @@
       {
         "id": 1,
         "name": "forked-repo-1",
-        "owner": { "login": "userwithonlyforks" },
+        "owner": { "login": "userWithOnlyForks" },
         "fork": true
       },
       {
         "id": 2,
         "name": "forked-repo-2",
-        "owner": { "login": "userwithonlyforks" },
+        "owner": { "login": "userWithOnlyForks" },
         "fork": true
       }
     ]

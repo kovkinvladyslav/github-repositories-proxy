@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "url": "/repos/mixeduser/complex-repo/branches"
+    "url": "/repos/mixedUser/complex-repo/branches"
   },
   "response": {
     "status": 200,

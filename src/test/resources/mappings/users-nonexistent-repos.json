@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "url": "/users/nonexistentownerlogin/repos"
+    "url": "/users/nonExistentOwnerLogin/repos"
   },
   "response": {
     "status": 404,
@@ -10,7 +10,7 @@
     },
     "jsonBody": {
       "status": 404,
-      "message": "User not found: nonexistentownerlogin"
+      "message": "User not found: nonExistentOwnerLogin"
     }
   }
 }

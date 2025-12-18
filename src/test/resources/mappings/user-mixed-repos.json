@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "url": "/users/mixeduser/repos"
+    "url": "/users/mixedUser/repos"
   },
   "response": {
     "status": 200,
@@ -12,13 +12,13 @@
       {
         "id": 10,
         "name": "forked-repo",
-        "owner": { "login": "mixeduser" },
+        "owner": { "login": "mixedUser" },
         "fork": true
       },
       {
         "id": 11,
         "name": "real-repo",
-        "owner": { "login": "mixeduser" },
+        "owner": { "login": "mixedUser" },
         "fork": false
       }
     ]
