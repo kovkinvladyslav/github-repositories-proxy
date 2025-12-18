@@ -1,39 +1,51 @@
 package com.example.github;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class GithubService {
 
     private final GithubClient client;
 
-    public GithubService(GithubClient client) {
-        this.client = client;
-    }
-
     public List<RepositoryResponse> getRepositories(String username) {
+        log.debug("Fetching repositories for user={}", username);
+
         var repos = client.getRepositories(username);
 
-        List<RepositoryResponse> repositoryResponse = new ArrayList<>();
-        for (var repo : repos) {
-            if (repo.fork()) continue;
+        var result = Arrays.stream(repos)
+                .filter(repo -> !repo.fork())
+                .map(repo -> new RepositoryResponse(
+                        repo.name(),
+                        repo.owner().login(),
+                        getBranches(repo)))
+                .toList();
 
-            var branches = client.getRepositoryBranches(
-                    repo.owner().login(),
-                    repo.name()
-            );
+        log.debug("Found {} non-fork repositories for user={}", result.size(), username);
 
-            repositoryResponse.add(new RepositoryResponse(
-                    repo.name(),
-                    repo.owner().login(),
-                    Arrays.stream(branches).map(branch -> new BranchResponse(
-                            branch.name(),
-                            branch.commit().sha())).toList()));
-        }
-        return repositoryResponse;
+        return result;
+    }
+
+    private List<BranchResponse> getBranches(GithubRepository repo) {
+        log.debug("Fetching branches for repo={} owner={}",
+                repo.name(), repo.owner().login());
+
+        var branches = client.getRepositoryBranches(
+                repo.owner().login(),
+                repo.name()
+        );
+
+        return Arrays.stream(branches)
+                .map(branch -> new BranchResponse(
+                        branch.name(),
+                        branch.commit().sha()
+                ))
+                .toList();
     }
 }

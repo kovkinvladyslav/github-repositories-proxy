@@ -82,6 +82,7 @@ class GithubApiProxyIntegrationTest {
         assertNotNull(repos);
         assertEquals(0, repos.length);
     }
+
     @Test
     void getRepositories_githubInternalError_returns500() {
         // given

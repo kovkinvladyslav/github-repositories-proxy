@@ -3,4 +3,6 @@ spring:
     name: github-api-proxy
 
 github-api:
-  base-url: "https://api.github.com"
+  base-url: https://api.github.com
+  user-agent: github-api-proxy
+  api-version: "2022-11-28"
