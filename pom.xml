@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>github-api-proxy</artifactId>
+	<artifactId>github-repositories-proxy</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>github-api-proxy</name>
+	<name>github-repositories-proxy</name>
 	<description>Spring Boot application proxying GitHub REST API.</description>
 	<url/>
 	<licenses>
