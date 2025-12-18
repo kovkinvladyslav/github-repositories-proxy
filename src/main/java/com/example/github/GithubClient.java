@@ -32,8 +32,7 @@ public class GithubClient {
         );
 
         try {
-            HttpResponse<String> response =
-                    httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 404) {
                 throw new UserNotFoundException(username);
@@ -53,8 +52,7 @@ public class GithubClient {
         );
 
         try {
-            HttpResponse<String> response =
-                    httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             ensureSuccess(response);
             return objectMapper.readValue(response.body(), GithubBranch[].class);
