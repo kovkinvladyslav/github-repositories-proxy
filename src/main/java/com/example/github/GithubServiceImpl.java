@@ -18,9 +18,10 @@ public final class GithubServiceImpl implements GithubService {
     public List<RepositoryResponse> getRepositories(final String username) {
         log.debug("Fetching repositories for user={}", username);
 
-        var repos = client.getRepositories(username);
+        final GithubRepositoryResponse[] repos =
+                client.getRepositories(username);
 
-        var result = Arrays.stream(repos)
+        final List<RepositoryResponse> result = Arrays.stream(repos)
                 .filter(repo -> !repo.fork())
                 .map(repo -> new RepositoryResponse(
                         repo.name(),
@@ -41,10 +42,8 @@ public final class GithubServiceImpl implements GithubService {
         log.debug("Fetching branches for repo={} owner={}",
                 repo.name(), repo.owner().login());
 
-        var branches = client.getRepositoryBranches(
-                repo.owner().login(),
-                repo.name()
-        );
+        final GithubBranchResponse[] branches =
+                client.getRepositoryBranches(repo.owner().login(), repo.name());
 
         return Arrays.stream(branches)
                 .map(branch -> new BranchResponse(
