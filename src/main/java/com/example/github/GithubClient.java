@@ -10,14 +10,14 @@ public interface GithubClient {
      * @param username GitHub username
      * @return array of repositories
      */
-    GithubRepository[] getRepositories(String username);
+    GithubRepositoryResponse[] getRepositories(String username);
 
     /**
      * Retrieves all branches for a repository.
      *
-     * @param owner repository owner
+     * @param username GitHub username (repository owner)
      * @param repo repository name
      * @return array of branches
      */
-    GithubBranch[] getRepositoryBranches(String owner, String repo);
+    GithubBranchResponse[] getRepositoryBranches(String username, String repo);
 }

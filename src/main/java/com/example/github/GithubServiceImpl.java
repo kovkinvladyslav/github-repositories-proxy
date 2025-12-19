@@ -36,7 +36,8 @@ public final class GithubServiceImpl implements GithubService {
         return result;
     }
 
-    private List<BranchResponse> getBranches(final GithubRepository repo) {
+    private List<BranchResponse>
+    getBranches(final GithubRepositoryResponse repo) {
         log.debug("Fetching branches for repo={} owner={}",
                 repo.name(), repo.owner().login());
 

@@ -22,23 +22,23 @@ public final class GithubClientImpl implements GithubClient {
     private final GithubApiProperties properties;
 
     @Override
-    public GithubRepository[] getRepositories(final String username) {
+    public GithubRepositoryResponse[] getRepositories(final String username) {
         return get("/users/%s/repos".formatted(username),
-                GithubRepository[].class, username);
+                GithubRepositoryResponse[].class, username);
     }
 
     @Override
-    public GithubBranch[] getRepositoryBranches(
-            final String owner, final String repo
+    public GithubBranchResponse[] getRepositoryBranches(
+            final String username, final String repo
     ) {
-        return get("/repos/%s/%s/branches".formatted(owner, repo),
-                GithubBranch[].class, owner);
+        return get("/repos/%s/%s/branches".formatted(username, repo),
+                GithubBranchResponse[].class, username);
     }
 
     private <T> T get(
             final String path,
             final Class<T> responseType,
-            final String userFor404
+            final String username
     ) {
         HttpRequest request = baseRequest(path);
 
@@ -49,8 +49,8 @@ public final class GithubClientImpl implements GithubClient {
             );
 
             if (response.statusCode() == HttpStatus.NOT_FOUND.value()) {
-                log.warn("GitHub returned 404 for user={}", userFor404);
-                throw new UserNotFoundException(userFor404);
+                log.warn("GitHub returned 404 for user={}", username);
+                throw new UserNotFoundException(username);
             }
 
             if (response.statusCode() != HttpStatus.OK.value()) {
