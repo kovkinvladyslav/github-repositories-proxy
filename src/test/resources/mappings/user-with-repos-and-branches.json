@@ -1,0 +1,27 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/users/userWithReposAndBranches/repos"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": [
+      {
+        "id": 1,
+        "name": "repo-with-branches",
+        "owner": { "login": "userWithReposAndBranches" },
+        "fork": false
+      },
+      {
+        "id": 2,
+        "name": "another-repo",
+        "owner": { "login": "userWithReposAndBranches" },
+        "fork": false
+      }
+    ]
+  }
+}
+

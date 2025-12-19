@@ -1,0 +1,19 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/repos/userWithReposAndBranches/another-repo/branches"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": [
+      {
+        "name": "master",
+        "commit": { "sha": "xyz789abc123" }
+      }
+    ]
+  }
+}
+

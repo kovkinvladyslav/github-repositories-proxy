@@ -1,6 +1,7 @@
 package com.example.github;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
+import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -43,68 +44,41 @@ final class GithubApiProxyIntegrationTest {
     }
 
     @Test
-    void getRepositories_UserNotFound() {
+    void getRepositories_reposWithBranches_returnsReposAndBranches() {
         // given
-        String userName = "nonExistentOwnerLogin";
+        val userName = "userWithReposAndBranches";
 
         // when
-        var response = restClient
+        val response = restClient
                 .get()
-                .uri("github/{userName}/repositories", userName)
-                .exchange((request,httpResponse) -> ResponseEntity
-                        .status(httpResponse.getStatusCode())
-                        .body(httpResponse.bodyTo(ErrorResponse.class)));
-
-        // then
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-
-        ErrorResponse error = response.getBody();
-        assertNotNull(error);
-        assertEquals(404, error.status());
-        assertEquals("User not found: " + userName, error.message());
-    }
-
-    @Test
-    void getRepositories_onlyForks_returnsEmptyList() {
-        // given
-        String userName = "userWithOnlyForks";
-
-        // when
-        ResponseEntity<RepositoryResponse[]> response =
-                restClient.get()
-                        .uri("/github/{userName}/repositories", userName)
-                        .retrieve()
-                        .toEntity(RepositoryResponse[].class);
+                .uri("/github/{userName}/repositories", userName)
+                .retrieve()
+                .toEntity(RepositoryResponse[].class);
 
         // then
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         RepositoryResponse[] repos = response.getBody();
         assertNotNull(repos);
-        assertEquals(0, repos.length);
-    }
+        assertEquals(2, repos.length);
 
-    @Test
-    void getRepositories_githubInternalError_returns500() {
-        // given
-        String userName = "gitHubError";
+        RepositoryResponse firstRepo = repos[0];
+        assertEquals("repo-with-branches", firstRepo.repositoryName());
+        assertEquals("userWithReposAndBranches", firstRepo.ownerLogin());
+        assertNotNull(firstRepo.branches());
+        assertEquals(2, firstRepo.branches().size());
 
-        // when
-        var response = restClient
-                .get()
-                .uri("/github/{userName}/repositories", userName)
-                .exchange((request, httpResponse) -> ResponseEntity
-                        .status(httpResponse.getStatusCode())
-                        .body(httpResponse.bodyTo(String.class)));
-
-        // then
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        RepositoryResponse secondRepo = repos[1];
+        assertEquals("another-repo", secondRepo.repositoryName());
+        assertEquals("userWithReposAndBranches", secondRepo.ownerLogin());
+        assertNotNull(secondRepo.branches());
+        assertEquals(1, secondRepo.branches().size());
     }
 
     @Test
     void getRepositories_mixedRepos_filtersForks() {
         // given
-        String userName = "mixedUser";
+        val userName = "mixedUser";
 
         // when
         ResponseEntity<RepositoryResponse[]> response =
@@ -126,4 +100,64 @@ final class GithubApiProxyIntegrationTest {
         assertNotNull(repo.branches());
         assertEquals(0, repo.branches().size());
     }
+
+    @Test
+    void getRepositories_onlyForks_returnsEmptyList() {
+        // given
+        val userName = "userWithOnlyForks";
+
+        // when
+        val response = restClient
+                .get()
+                .uri("/github/{userName}/repositories", userName)
+                .retrieve()
+                .toEntity(RepositoryResponse[].class);
+
+        // then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        RepositoryResponse[] repos = response.getBody();
+        assertNotNull(repos);
+        assertEquals(0, repos.length);
+    }
+
+    @Test
+    void getRepositories_UserNotFound() {
+        // given
+        val userName = "nonExistentOwnerLogin";
+
+        // when
+        val response = restClient
+                .get()
+                .uri("github/{userName}/repositories", userName)
+                .exchange((request,httpResponse) -> ResponseEntity
+                        .status(httpResponse.getStatusCode())
+                        .body(httpResponse.bodyTo(ErrorResponse.class)));
+
+        // then
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+        ErrorResponse error = response.getBody();
+        assertNotNull(error);
+        assertEquals(404, error.status());
+        assertEquals("User not found: " + userName, error.message());
+    }
+
+    @Test
+    void getRepositories_githubInternalError_returns500() {
+        // given
+        val userName = "gitHubError";
+
+        // when
+        val response = restClient
+                .get()
+                .uri("/github/{userName}/repositories", userName)
+                .exchange((request, httpResponse) -> ResponseEntity
+                        .status(httpResponse.getStatusCode())
+                        .body(httpResponse.bodyTo(String.class)));
+
+        // then
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
 }
